@@ -13,7 +13,7 @@ import java.util.Properties;
  */
 public class PropertyFileConfig implements IConfig{
     
-    public static final String defaultConfig = "config.properties";
+    public static final String DEFAULT_CONFIG = "config.properties";
 
     @Override
     public Properties getConfig(String fileName) {

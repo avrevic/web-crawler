@@ -16,7 +16,7 @@ public class PropertyFileConfigTest {
     @Test
     public void propertyFileShouldBeLoadedSuccessfully() {
         IConfig config = new PropertyFileConfig();
-        Properties properties = config.getConfig(PropertyFileConfig.defaultConfig);
+        Properties properties = config.getConfig(PropertyFileConfig.DEFAULT_CONFIG);
         Assert.assertEquals("https://www.babylonhealth.com", properties.get("website"));
     }
     
