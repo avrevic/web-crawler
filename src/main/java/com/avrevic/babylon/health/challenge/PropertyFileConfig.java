@@ -12,6 +12,8 @@ import java.util.Properties;
  * @author avrevic
  */
 public class PropertyFileConfig implements IConfig{
+    
+    public static final String defaultConfig = "config.properties";
 
     @Override
     public Properties getConfig(String fileName) {
