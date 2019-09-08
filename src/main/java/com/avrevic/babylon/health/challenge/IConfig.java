@@ -13,6 +13,6 @@ import java.util.Properties;
  */
 public interface IConfig {
     
-    public Properties getConfig(String fileName);
+    public Properties getConfig(String fileName) throws Exception;
     
 }
