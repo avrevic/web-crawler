@@ -1,0 +1,8 @@
+# robots.txt for https://www.localtest.com/
+
+Sitemap: https://www.localtest.com/sitemap-pages.xml
+
+# live - don't allow web crawlers to index cpresources/ or vendor/
+
+User-agent: *
+Disallow: /vendor/
