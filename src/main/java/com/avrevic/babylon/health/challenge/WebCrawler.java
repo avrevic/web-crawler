@@ -11,12 +11,21 @@ package com.avrevic.babylon.health.challenge;
  */
 public class WebCrawler implements ICrawler {
 
+    private String url;
+    
+    public String getUrl() {
+        return this.url;
+    }
+
     @Override
-    public void crawl(String url) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void initializeParams(String url) {
+        this.url = url;
     }
     
     private String fetchRobots() {
+
+    @Override
+    public void crawl() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
