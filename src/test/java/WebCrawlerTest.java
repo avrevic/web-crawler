@@ -12,12 +12,17 @@ import org.junit.Test;
  * @author avrevic
  */
 public class WebCrawlerTest {
+    
+    private WebCrawler initializeCrawler(String path) {
+        WebCrawler crawler = new WebCrawler();
+        crawler.initializeParams(path);
+        return crawler;
+    }
 
     @Test
     public void robotsFileShouldBeLoadedSuccessfully() throws Exception {
         String path = ("file:/" + System.getProperty("user.dir") + "\\src\\test").replace("\\", "/");
-        WebCrawler crawler = new WebCrawler();
-        crawler.initializeParams(path);
+        WebCrawler crawler = initializeCrawler(path);
         crawler.fetchRobots();
 
         path = "https://www.google.com";
@@ -28,8 +33,7 @@ public class WebCrawlerTest {
     @Test(expected = Exception.class)
     public void invalidRobotsFileShouldThrowException() throws Exception {
         String path = ("not_valid_url");
-        WebCrawler crawler = new WebCrawler();
-        crawler.initializeParams(path);
+        WebCrawler crawler = initializeCrawler(path);
         crawler.fetchRobots();
     }
     
