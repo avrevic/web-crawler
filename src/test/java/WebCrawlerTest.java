@@ -6,7 +6,10 @@
 
 import com.avrevic.babylon.health.challenge.WebCrawler;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -47,6 +50,20 @@ public class WebCrawlerTest {
         List<String> expectedValues = new ArrayList<>();
         expectedValues.add("/vendor/");
         Assert.assertEquals(expectedValues, crawler.getDisabledUrls());
+    }
+
+    @Test
+    public void shouldReturnCorrectLinkHierarchy() {
+        HashMap<Integer, Set<String>> testUrls = new HashMap<>();
+        Set<String> urlLinks = new HashSet<>();
+        urlLinks.add("http://localhost");
+        testUrls.put(0, urlLinks);
+        urlLinks = new HashSet<>();
+        urlLinks.add("page2.html");
+        testUrls.put(1, urlLinks);
+        WebCrawler crawler = initializeCrawler("http://localhost");
+        crawler.crawl();
+        Assert.assertEquals(testUrls, crawler.getSiteUrls());
     }
 
 }
