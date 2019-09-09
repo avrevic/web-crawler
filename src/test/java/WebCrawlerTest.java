@@ -15,13 +15,14 @@ public class WebCrawlerTest {
 
     @Test
     public void robotsFileShouldBeLoadedSuccessfully() throws Exception {
-        String path = ("file:/" + System.getProperty("user.dir") + "\\src\\test\\robots.txt").replace("\\", "/");
+        String path = ("file:/" + System.getProperty("user.dir") + "\\src\\test").replace("\\", "/");
         WebCrawler crawler = new WebCrawler();
         crawler.initializeParams(path);
         crawler.fetchRobots();
-        
-        path = "https://www.google.com/robots.txt";
+
+        path = "https://www.google.com";
         crawler.initializeParams(path);
         crawler.fetchRobots();
     }
+
 }

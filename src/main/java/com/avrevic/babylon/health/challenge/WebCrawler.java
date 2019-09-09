@@ -38,7 +38,7 @@ public class WebCrawler implements ICrawler {
     }
 
     public String fetchRobots() throws MalformedURLException, IOException {
-        URI u = URI.create(this.url);
+        URI u = URI.create(this.url + "/robots.txt");
         try (InputStream in = u.toURL().openStream()) {
             File file = new File(System.getProperty("java.io.tmpdir") + "robots.txt");
             FileUtils.copyInputStreamToFile(in, file);
