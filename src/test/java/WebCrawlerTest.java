@@ -24,15 +24,11 @@ public class WebCrawlerTest {
 
     @Test
     public void robotsFileShouldBeLoadedSuccessfully() throws Exception {
-        String path = ("file:/" + System.getProperty("user.dir") + "\\src\\test").replace("\\", "/");
-        WebCrawler crawler = initializeCrawler(path);
+        WebCrawler crawler = initializeCrawler("http://localhost");
         String robotsFile = crawler.fetchRobots();
-        Assert.assertEquals(
-                "User-agent: *\n"
-                + "Disallow: /vendor/", robotsFile);
+        Assert.assertEquals("User-agent: * Disallow: /vendor/", robotsFile);
 
-        path = "https://www.google.com";
-        crawler.initializeParams(path);
+        crawler.initializeParams("https://www.google.com");
         robotsFile = crawler.fetchRobots();
         Assert.assertNotNull(robotsFile);
     }
@@ -46,8 +42,7 @@ public class WebCrawlerTest {
 
     @Test
     public void shouldParseDissalowedSitesCorrectly() throws Exception {
-        String path = ("file:/" + System.getProperty("user.dir") + "\\src\\test").replace("\\", "/");
-        WebCrawler crawler = initializeCrawler(path);
+        WebCrawler crawler = initializeCrawler("http://localhost");
         crawler.populateDisabledSites();
         List<String> expectedValues = new ArrayList<>();
         expectedValues.add("/vendor/");
