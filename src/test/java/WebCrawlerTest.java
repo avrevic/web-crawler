@@ -5,6 +5,8 @@
  */
 
 import com.avrevic.babylon.health.challenge.WebCrawler;
+import java.util.ArrayList;
+import java.util.List;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -41,5 +43,15 @@ public class WebCrawlerTest {
         WebCrawler crawler = initializeCrawler(path);
         crawler.fetchRobots();
     }
-    
+
+    @Test
+    public void shouldParseDissalowedSitesCorrectly() throws Exception {
+        String path = ("file:/" + System.getProperty("user.dir") + "\\src\\test").replace("\\", "/");
+        WebCrawler crawler = initializeCrawler(path);
+        crawler.populateDisabledSites();
+        List<String> expectedValues = new ArrayList<>();
+        expectedValues.add("/vendor/");
+        Assert.assertEquals(expectedValues, crawler.getDisabledUrls());
+    }
+
 }
