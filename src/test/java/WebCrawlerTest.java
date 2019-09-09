@@ -5,6 +5,7 @@
  */
 
 import com.avrevic.babylon.health.challenge.WebCrawler;
+import junit.framework.Assert;
 import org.junit.Test;
 
 /**
@@ -12,7 +13,7 @@ import org.junit.Test;
  * @author avrevic
  */
 public class WebCrawlerTest {
-    
+
     private WebCrawler initializeCrawler(String path) {
         WebCrawler crawler = new WebCrawler();
         crawler.initializeParams(path);
@@ -23,11 +24,15 @@ public class WebCrawlerTest {
     public void robotsFileShouldBeLoadedSuccessfully() throws Exception {
         String path = ("file:/" + System.getProperty("user.dir") + "\\src\\test").replace("\\", "/");
         WebCrawler crawler = initializeCrawler(path);
-        crawler.fetchRobots();
+        String robotsFile = crawler.fetchRobots();
+        Assert.assertEquals(
+                "User-agent: *\n"
+                + "Disallow: /vendor/", robotsFile);
 
         path = "https://www.google.com";
         crawler.initializeParams(path);
-        crawler.fetchRobots();
+        robotsFile = crawler.fetchRobots();
+        Assert.assertNotNull(robotsFile);
     }
 
     @Test(expected = Exception.class)
