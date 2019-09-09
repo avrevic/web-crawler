@@ -13,6 +13,8 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -37,7 +39,7 @@ public class WebCrawler implements ICrawler {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public String fetchRobots() throws MalformedURLException, IOException {
+    public String fetchRobots() throws Exception {
         URI u = URI.create(this.url + "/robots.txt");
         try (InputStream in = u.toURL().openStream()) {
             File file = new File(System.getProperty("java.io.tmpdir") + "robots.txt");
@@ -48,7 +50,11 @@ public class WebCrawler implements ICrawler {
     }
 
     private void populateDisabledSites() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            String robotsFile = this.fetchRobots();
+        } catch (Exception ex) {
+            Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

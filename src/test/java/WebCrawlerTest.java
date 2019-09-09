@@ -25,8 +25,8 @@ public class WebCrawlerTest {
         crawler.fetchRobots();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void robotsFileShouldThrowIllegalArgumentException() throws Exception {
+    @Test(expected = Exception.class)
+    public void invalidRobotsFileShouldThrowException() throws Exception {
         String path = ("not_valid_url");
         WebCrawler crawler = new WebCrawler();
         crawler.initializeParams(path);
