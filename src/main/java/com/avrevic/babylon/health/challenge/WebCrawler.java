@@ -5,16 +5,17 @@
  */
 package com.avrevic.babylon.health.challenge;
 
+import com.google.common.base.CharMatcher;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
+import java.io.StringReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -24,14 +25,20 @@ import org.apache.commons.io.FileUtils;
 public class WebCrawler implements ICrawler {
 
     private String url;
-    
+    private List<String> disabledUrls;
+
     public String getUrl() {
         return this.url;
+    }
+
+    public List<String> getDisabledUrls() {
+        return this.disabledUrls;
     }
 
     @Override
     public void initializeParams(String url) {
         this.url = url;
+        this.disabledUrls = new ArrayList<>();
     }
 
     @Override
@@ -49,12 +56,16 @@ public class WebCrawler implements ICrawler {
         }
     }
 
-    private void populateDisabledSites() {
-        try {
-            String robotsFile = this.fetchRobots();
-        } catch (Exception ex) {
-            Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void populateDisabledSites() throws Exception {
+        String robotsFile = this.fetchRobots();
+        new BufferedReader(new StringReader(robotsFile)).lines().forEach((String line) -> {
+            if (line.startsWith("Disallow: ")) {
+                Integer urlPathBranch = CharMatcher.is('/').countIn(line.substring(line.indexOf("/")));
+                if (!this.disabledUrls.contains(line.substring(line.indexOf("/")))) {
+                    this.disabledUrls.add(line.substring(line.indexOf("/")));
+                }
+            }
+        });
     }
 
 }
