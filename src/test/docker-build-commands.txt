@@ -3,3 +3,6 @@ docker run -d -p 80:80 -v ${pwd}:/usr/share/nginx/html avrevic-nginx
 # run docker container ls to get the container id
 # run the below command with the correct container id
 docker cp .\robots.txt <type_container_id_here>:/usr/share/nginx/html
+docker cp .\index.html <type_container_id_here>:/usr/share/nginx/html
+docker cp .\vendor <type_container_id_here>:/usr/share/nginx/html
+docker cp .\page2.html <type_container_id_here>:/usr/share/nginx/html
