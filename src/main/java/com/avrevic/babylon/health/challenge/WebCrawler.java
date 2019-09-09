@@ -47,7 +47,7 @@ public class WebCrawler implements ICrawler {
         }
     }
 
-    private void populateDisabledSites(String robotsFile) {
+    private void populateDisabledSites() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
