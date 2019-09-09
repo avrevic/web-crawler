@@ -5,18 +5,11 @@
  */
 package com.avrevic.babylon.health.challenge;
 
-import com.google.common.base.CharMatcher;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.StringReader;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 /**
  *
@@ -48,24 +41,18 @@ public class WebCrawler implements ICrawler {
 
     public String fetchRobots() throws Exception {
         URI u = URI.create(this.url + "/robots.txt");
-        try (InputStream in = u.toURL().openStream()) {
-            File file = new File(System.getProperty("java.io.tmpdir") + "robots.txt");
-            FileUtils.copyInputStreamToFile(in, file);
-            byte[] encoded = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
-            return new String(encoded, StandardCharsets.US_ASCII);
-        }
+        Document doc = Jsoup.parse(Jsoup.connect(this.url + "/robots.txt").get().toString());
+        return doc.select("body").html();
     }
 
     public void populateDisabledSites() throws Exception {
-        String robotsFile = this.fetchRobots();
-        new BufferedReader(new StringReader(robotsFile)).lines().forEach((String line) -> {
-            if (line.startsWith("Disallow: ")) {
-                Integer urlPathBranch = CharMatcher.is('/').countIn(line.substring(line.indexOf("/")));
-                if (!this.disabledUrls.contains(line.substring(line.indexOf("/")))) {
-                    this.disabledUrls.add(line.substring(line.indexOf("/")));
-                }
+        String robotsFile[] = this.fetchRobots().split("\\r?\\n");
+        for (String line : robotsFile) {
+            Integer slashIndex = line.indexOf("/");
+            if (slashIndex != -1 && !this.disabledUrls.contains(line.substring(slashIndex))) {
+                this.disabledUrls.add(line.substring(slashIndex));
             }
-        });
+        }
     }
 
 }
