@@ -83,11 +83,11 @@ public class WebCrawler implements ICrawler {
      */
     public void fetchAllLinks(String url, Integer level) throws MalformedURLException, IOException {
         Document doc;
-        if (!urlUtil.checkHostUrlEquality(this.url, url)) {
+        if (!urlUtil.isSourceHostURLEqualTarget(this.url, url)) {
             System.out.println("External link");
             return;
         }
-        String path = urlUtil.fetchUrlPath(url);
+        String path = urlUtil.getUrlPath(url);
         Integer hierachyLevel = StringUtils.countMatches(path, "/");
         if (this.siteUrls.get(hierachyLevel) != null && this.siteUrls.get(hierachyLevel).get(url) != null) {
             System.out.println("Link already in the hierarchy table");

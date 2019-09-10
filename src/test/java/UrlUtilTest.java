@@ -28,21 +28,21 @@ public class UrlUtilTest {
      */
     private void urlEqualityCombinationsAssert(String source, String targetUrlString, boolean assertCheck, boolean targetProtocolSpecified) throws MalformedURLException {
         if (targetProtocolSpecified) {
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, targetUrlString), assertCheck);
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, targetUrlString + "/"), assertCheck);
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, targetUrlString + ":/"), assertCheck);
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, targetUrlString + ":80/"), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, targetUrlString), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, targetUrlString + "/"), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, targetUrlString + ":/"), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, targetUrlString + ":80/"), assertCheck);
         } else {
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, "http://" + targetUrlString + ""), assertCheck);
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, "http://" + targetUrlString + "/"), assertCheck);
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, "http://" + targetUrlString + ":/"), assertCheck);
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, "http://" + targetUrlString + ":80/"), assertCheck);
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, "http://com." + targetUrlString + "/"), assertCheck);
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, "https://" + targetUrlString + ""), assertCheck);
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, "https://" + targetUrlString + "/"), assertCheck);
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, "https://" + targetUrlString + ":/"), assertCheck);
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, "https://" + targetUrlString + ":80/"), assertCheck);
-            Assert.assertEquals(urlUtil.checkHostUrlEquality(source, "https://com." + targetUrlString + "/"), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, "http://" + targetUrlString + ""), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, "http://" + targetUrlString + "/"), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, "http://" + targetUrlString + ":/"), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, "http://" + targetUrlString + ":80/"), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, "http://com." + targetUrlString + "/"), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, "https://" + targetUrlString + ""), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, "https://" + targetUrlString + "/"), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, "https://" + targetUrlString + ":/"), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, "https://" + targetUrlString + ":80/"), assertCheck);
+            Assert.assertEquals(urlUtil.isSourceHostURLEqualTarget(source, "https://com." + targetUrlString + "/"), assertCheck);
         }
     }
 
@@ -84,7 +84,7 @@ public class UrlUtilTest {
     public void pathsShouldBeEqual() throws MalformedURLException {
         String sourceUrlString = "http://example.com/test";
         String targetUrlString = "https://example.com/test";
-        Assert.assertEquals(urlUtil.fetchUrlPath(sourceUrlString), urlUtil.fetchUrlPath(targetUrlString));
+        Assert.assertEquals(urlUtil.getUrlPath(sourceUrlString), urlUtil.getUrlPath(targetUrlString));
     }
 
     @Test

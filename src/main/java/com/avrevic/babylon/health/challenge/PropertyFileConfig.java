@@ -7,7 +7,7 @@ import java.util.Properties;
 
 /**
  * Implementation of config file manipulation
- * 
+ *
  * @author avrevic
  */
 public class PropertyFileConfig implements IConfig {
