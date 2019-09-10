@@ -1,13 +1,18 @@
 package com.avrevic.babylon.health.challenge;
 
+import java.util.HashMap;
+
 /**
- *
- * @author avrevic
+ * Crawler interface
  */
 public interface ICrawler {
 
-    public void initializeParams(String url);
-
-    public void crawl() throws Exception;
+    /**
+     * Main crawl method that should fetch all url's
+     *
+     * @return
+     * @throws Exception
+     */
+    public HashMap<Integer, HashMap<String, Boolean>> crawl() throws Exception;
 
 }

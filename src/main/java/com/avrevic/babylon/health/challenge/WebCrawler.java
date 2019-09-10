@@ -39,7 +39,6 @@ public class WebCrawler implements ICrawler {
         return this.siteUrls;
     }
 
-    @Override
     public void initializeParams(String url) {
         this.url = url;
         this.disabledUrls = new ArrayList<>();
@@ -49,9 +48,10 @@ public class WebCrawler implements ICrawler {
     }
 
     @Override
-    public void crawl() throws Exception {
+    public HashMap<Integer, HashMap<String, Boolean>> crawl() throws Exception {
         this.populateDisabledSites();
         fetchAllLinks(this.url, 0);
+        return this.getSiteUrls();
     }
 
     public void fetchAllLinks(String url, Integer level) throws MalformedURLException, IOException {
