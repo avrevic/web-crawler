@@ -51,6 +51,11 @@ public class WebCrawler implements ICrawler {
         }
     }
 
+    public String fetchUrlPath(String source) throws MalformedURLException {
+        URL sourceUrl = new URL(source);
+        return sourceUrl.getPath();
+    }
+
     public boolean checkHostUrlEquality(String source, String target) throws MalformedURLException {
         URL sourceUrl = new URL(source);
         URL targetUrl = new URL(target);

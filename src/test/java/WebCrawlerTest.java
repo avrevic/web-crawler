@@ -6,7 +6,6 @@
 
 import com.avrevic.babylon.health.challenge.WebCrawler;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -120,6 +119,14 @@ public class WebCrawlerTest {
         urlEqualityCombinationsAssert(crawler, sourceUrlString, targetUrlString, false, false);
         targetUrlString = "http://google.com/test";
         urlEqualityCombinationsAssert(crawler, sourceUrlString, targetUrlString, false, true);
+    }
+
+    @Test
+    public void pathsShouldBeEqual() throws MalformedURLException {
+        String sourceUrlString = "http://example.com/test";
+        String targetUrlString = "https://example.com/test";
+        WebCrawler crawler = initializeCrawler(sourceUrlString);
+        Assert.assertEquals(crawler.fetchUrlPath(sourceUrlString), crawler.fetchUrlPath(targetUrlString));
     }
 
 }
