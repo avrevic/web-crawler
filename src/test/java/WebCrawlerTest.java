@@ -51,7 +51,13 @@ public class WebCrawlerTest {
         expectedValues.add("/vendor/");
         Assert.assertEquals(expectedValues, crawler.getDisabledUrls());
     }
-
+    
+    @Test
+    public void propertiesShouldBeInitializedSuccessfully() {
+        WebCrawler crawler = initializeCrawler("http://localhost");
+        Assert.assertNotNull(crawler.getUrl());
+    }
+    
     @Test
     public void shouldReturnCorrectLinkHierarchy() {
         HashMap<Integer, Set<String>> testUrls = new HashMap<>();
