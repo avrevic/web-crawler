@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 import com.avrevic.babylon.health.challenge.WebCrawler;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +52,7 @@ public class WebCrawlerTest {
     }
 
     @Test
-    public void shouldReturnCorrectLinkHierarchy() {
+    public void shouldReturnCorrectLinkHierarchy() throws Exception {
         HashMap<Integer, HashMap<String, Boolean>> testUrls = new HashMap<>();
         HashMap<String, Boolean> urlLinks = new HashMap<>();
         urlLinks.put("http://localhost", true);
@@ -69,4 +65,11 @@ public class WebCrawlerTest {
         crawler.crawl();
         Assert.assertEquals(testUrls, crawler.getSiteUrls());
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldReturnInvalidArgumentException() throws Exception {
+        WebCrawler crawler = initializeCrawler("invalid_url");
+        crawler.crawl();
+    }
+
 }

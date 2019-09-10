@@ -1,20 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.avrevic.babylon.health.challenge;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -55,54 +49,45 @@ public class WebCrawler implements ICrawler {
     }
 
     @Override
-    public void crawl() {
-        try {
-            this.populateDisabledSites();
-            fetchAllLinks(this.url, 0);
-        } catch (Exception ex) {
-            Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void crawl() throws Exception {
+        this.populateDisabledSites();
+        fetchAllLinks(this.url, 0);
     }
 
-    public void fetchAllLinks(String url, Integer level) {
+    public void fetchAllLinks(String url, Integer level) throws MalformedURLException, IOException {
         Document doc;
-        try {
-            if (!urlUtil.checkHostUrlEquality(this.url, url)) {
-                System.out.println("External link");
-                return;
-            }
-            String path = urlUtil.fetchUrlPath(url);
-            Integer hierachyLevel = StringUtils.countMatches(path, "/");
-            if (this.siteUrls.get(hierachyLevel) != null && this.siteUrls.get(hierachyLevel).get(url) != null) {
-                System.out.println("Link already in the hierarchy table");
-                return;
-            }
-            if (disabledUrls.contains(StringUtils.stripEnd(StringUtils.stripStart(path, "/"), "/"))) {
-                System.out.println("Link crawling is disabled by robots");
-                return;
-            }
-            if (this.siteUrls.get(hierachyLevel) == null) {
-                HashMap<String, Boolean> newUrlBranch = new HashMap<>();
-                newUrlBranch.put(url, Boolean.TRUE);
-                this.siteUrls.put(level, newUrlBranch);
-            } else {
-                this.siteUrls.get(hierachyLevel).put(url, Boolean.TRUE);
-            }
-            doc = Jsoup.parse(Jsoup.connect(url).get().toString());
-            Elements links = doc.select("a[href]");
+        if (!urlUtil.checkHostUrlEquality(this.url, url)) {
+            System.out.println("External link");
+            return;
+        }
+        String path = urlUtil.fetchUrlPath(url);
+        Integer hierachyLevel = StringUtils.countMatches(path, "/");
+        if (this.siteUrls.get(hierachyLevel) != null && this.siteUrls.get(hierachyLevel).get(url) != null) {
+            System.out.println("Link already in the hierarchy table");
+            return;
+        }
+        if (disabledUrls.contains(StringUtils.stripEnd(StringUtils.stripStart(path, "/"), "/"))) {
+            System.out.println("Link crawling is disabled by robots");
+            return;
+        }
+        if (this.siteUrls.get(hierachyLevel) == null) {
+            HashMap<String, Boolean> newUrlBranch = new HashMap<>();
+            newUrlBranch.put(url, Boolean.TRUE);
+            this.siteUrls.put(level, newUrlBranch);
+        } else {
+            this.siteUrls.get(hierachyLevel).put(url, Boolean.TRUE);
+        }
+        doc = Jsoup.parse(Jsoup.connect(url).get().toString());
+        Elements links = doc.select("a[href]");
 
-            for (Element link : links) {
-                String href = link.attr("href");
-                try {
-                    new URL(href);
-                    fetchAllLinks(href, level + 1);
-                } catch (MalformedURLException ex) {
-                    fetchAllLinks(this.url + "/" + href, level + 1);
-                }
+        for (Element link : links) {
+            String href = link.attr("href");
+            try {
+                new URL(href);
+                fetchAllLinks(href, level + 1);
+            } catch (MalformedURLException ex) {
+                fetchAllLinks(this.url + "/" + href, level + 1);
             }
-
-        } catch (Exception ex) {
-            Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
