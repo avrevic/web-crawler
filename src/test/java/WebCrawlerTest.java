@@ -5,8 +5,8 @@
  */
 
 import com.avrevic.babylon.health.challenge.WebCrawler;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -28,7 +28,6 @@ public class WebCrawlerTest {
         WebCrawler crawler = initializeCrawler("http://localhost");
         String robotsFile = crawler.fetchRobots();
         Assert.assertEquals("User-agent: * Disallow: /vendor/", robotsFile);
-
         crawler.initializeParams("https://www.google.com");
         robotsFile = crawler.fetchRobots();
         Assert.assertNotNull(robotsFile);
@@ -46,7 +45,7 @@ public class WebCrawlerTest {
         WebCrawler crawler = initializeCrawler("http://localhost");
         crawler.populateDisabledSites();
         List<String> expectedValues = new ArrayList<>();
-        expectedValues.add("/vendor/");
+        expectedValues.add("vendor");
         Assert.assertEquals(expectedValues, crawler.getDisabledUrls());
     }
 
@@ -56,18 +55,18 @@ public class WebCrawlerTest {
         Assert.assertNotNull(crawler.getUrl());
     }
 
-    /*
     @Test
     public void shouldReturnCorrectLinkHierarchy() {
-        HashMap<Integer, Set<String>> testUrls = new HashMap<>();
-        Set<String> urlLinks = new HashSet<>();
-        urlLinks.add("http://localhost");
+        HashMap<Integer, HashMap<String, Boolean>> testUrls = new HashMap<>();
+        HashMap<String, Boolean> urlLinks = new HashMap<>();
+        urlLinks.put("http://localhost", true);
         testUrls.put(0, urlLinks);
-        urlLinks = new HashSet<>();
-        urlLinks.add("page2.html");
+        urlLinks = new HashMap<>();
+        urlLinks.put("http://localhost/page2.html", true);
+        urlLinks.put("http://localhost/index.html", true);
         testUrls.put(1, urlLinks);
         WebCrawler crawler = initializeCrawler("http://localhost");
         crawler.crawl();
         Assert.assertEquals(testUrls, crawler.getSiteUrls());
-    }*/
+    }
 }
