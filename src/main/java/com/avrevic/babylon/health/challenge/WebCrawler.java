@@ -5,11 +5,18 @@
  */
 package com.avrevic.babylon.health.challenge;
 
-import java.net.URI;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 /**
  *
@@ -36,11 +43,37 @@ public class WebCrawler implements ICrawler {
 
     @Override
     public void crawl() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            this.populateDisabledSites();
+            fetchAllLinks(this.url, 0);
+        } catch (Exception ex) {
+            Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public boolean checkHostUrlEquality(String source, String target) throws MalformedURLException {
+        URL sourceUrl = new URL(source);
+        URL targetUrl = new URL(target);
+        String sourceUrlToCompare = sourceUrl.getHost();
+        String targetUrlToCompare = targetUrl.getHost();
+        if (sourceUrlToCompare != null && sourceUrlToCompare.startsWith("www.")) {
+            sourceUrlToCompare = sourceUrlToCompare.substring(4);
+        }
+        if (targetUrlToCompare != null && targetUrlToCompare.startsWith("www.")) {
+            targetUrlToCompare = targetUrlToCompare.substring(4);
+        }
+        if (sourceUrlToCompare.equals(targetUrlToCompare)) {
+            return true;
+        } else {
+            targetUrlToCompare = targetUrlToCompare.substring(targetUrlToCompare.indexOf(".") + 1);
+            if (sourceUrlToCompare.equals(targetUrlToCompare)) {
+                return true;
+            }
+            return false;
+        }
     }
 
     public String fetchRobots() throws Exception {
-        URI u = URI.create(this.url + "/robots.txt");
         Document doc = Jsoup.parse(Jsoup.connect(this.url + "/robots.txt").get().toString());
         return doc.select("body").html();
     }
