@@ -90,17 +90,17 @@ public class WebCrawler implements ICrawler {
     public void fetchAllLinks(String url) throws MalformedURLException, IOException {
         Document doc;
         if (!urlUtil.isSourceHostURLEqualTarget(this.url, url)) {
-            System.out.println("External link");
+            //External link
             return;
         }
         String path = urlUtil.getUrlPath(url);
         Integer hierachyLevel = StringUtils.countMatches(path, "/");
         if (this.siteUrls.get(hierachyLevel) != null && this.siteUrls.get(hierachyLevel).get(url) != null) {
-            System.out.println("Link already in the hierarchy table");
+            //Link already in the hierarchy table
             return;
         }
         if (disabledUrls.contains(StringUtils.stripEnd(StringUtils.stripStart(path, "/"), "/"))) {
-            System.out.println("Link crawling is disabled by robots");
+            //Link crawling is disabled by robots
             return;
         }
         // Initialize tha hashmap
