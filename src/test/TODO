@@ -5,6 +5,7 @@ sitemap html + xml
 Javadoc
 comments
 log
+linter
 code coverage
 docker
 tests
