@@ -58,6 +58,7 @@ public class HtmlSiteMap implements ISiteMap {
         // Outer loop iterates through all hierarchy levels
         sb.append("<ul>\n");
         sb.append("<li>\n");
+        sb.append(baseUrl + "\n");
         sb.append("<ul>\n");
         appendUrlHierarchy(urlList, 1, baseUrl, maxPath);
         sb.append("</ul>\n");

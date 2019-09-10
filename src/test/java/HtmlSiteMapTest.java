@@ -7,7 +7,9 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import junit.framework.Assert;
 import org.junit.Test;
 
 public class HtmlSiteMapTest {
@@ -25,8 +27,8 @@ public class HtmlSiteMapTest {
         this.siteMap = injector.getInstance(ISiteMap.class);
         this.crawler.initializeParams("http://localhost");
         siteMap.generateSitemap("http://localhost", this.crawler.crawl());
-        Paths.get(FileSystems.getDefault().getPath(".").toString() + "/output/sitemap.html")
-        , sb.toString().getBytes()
-        
+        String newFile = new String(Files.readAllBytes(Paths.get(FileSystems.getDefault().getPath(".").toString() + "/output/sitemap.html")));
+        String testFile = new String(Files.readAllBytes(Paths.get(FileSystems.getDefault().getPath(".").toString() + "/src/test/sitemap-test.html")));
+        Assert.assertEquals(testFile, newFile);
     }
 }
