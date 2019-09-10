@@ -8,7 +8,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,7 +24,7 @@ public class WebCrawler implements ICrawler {
 
     private String url;
     private List<String> disabledUrls;
-    private HashMap<Integer, HashMap<String, Boolean>> siteUrls;
+    private HashMap<Integer, Set<String>> siteUrls;
     @Inject
     private UrlUtil urlUtil;
 
@@ -49,7 +51,7 @@ public class WebCrawler implements ICrawler {
      *
      * @return
      */
-    public HashMap<Integer, HashMap<String, Boolean>> getSiteUrls() {
+    public HashMap<Integer, Set<String>> getSiteUrls() {
         return this.siteUrls;
     }
 
@@ -58,6 +60,7 @@ public class WebCrawler implements ICrawler {
      *
      * @param url url which we want to crawl
      */
+    @Override
     public void initializeParams(String url) {
         this.url = url;
         this.disabledUrls = new ArrayList<>();
@@ -73,7 +76,7 @@ public class WebCrawler implements ICrawler {
      * @throws Exception
      */
     @Override
-    public HashMap<Integer, HashMap<String, Boolean>> crawl() throws Exception {
+    public HashMap<Integer, Set<String>> crawl() throws Exception {
         this.populateDisabledSites();
         fetchAllLinks(this.url);
         return this.getSiteUrls();
@@ -95,7 +98,7 @@ public class WebCrawler implements ICrawler {
         }
         String path = urlUtil.getUrlPath(url);
         Integer hierachyLevel = StringUtils.countMatches(path, "/");
-        if (this.siteUrls.get(hierachyLevel) != null && this.siteUrls.get(hierachyLevel).get(url) != null) {
+        if (this.siteUrls.get(hierachyLevel) != null && this.siteUrls.get(hierachyLevel).contains(url)) {
             //Link already in the hierarchy table
             return;
         }
@@ -105,15 +108,19 @@ public class WebCrawler implements ICrawler {
         }
         // Initialize tha hashmap
         if (this.siteUrls.get(hierachyLevel) == null) {
-            HashMap<String, Boolean> newUrlBranch = new HashMap<>();
-            newUrlBranch.put(url, Boolean.TRUE);
+            Set<String> newUrlBranch = new HashSet<>();
+            newUrlBranch.add(url);
             this.siteUrls.put(hierachyLevel, newUrlBranch);
         } else {
-            this.siteUrls.get(hierachyLevel).put(url, Boolean.TRUE);
+            this.siteUrls.get(hierachyLevel).add(url);
         }
-        doc = Jsoup.parse(Jsoup.connect(url).get().toString());
+        try {
+            doc = Jsoup.parse(Jsoup.connect(url).get().toString());
+        } catch (Exception ex) {
+            return;
+        }
         Elements links = doc.select("a[href]");
-
+        System.out.println("href fetch complete for url: " + url);
         for (Element link : links) {
             String href = link.attr("href");
             try {

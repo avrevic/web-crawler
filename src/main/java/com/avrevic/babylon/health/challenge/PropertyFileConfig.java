@@ -23,6 +23,9 @@ public class PropertyFileConfig implements IConfig {
      */
     @Override
     public Properties getConfig(String resourceName) throws IOException {
+        if (resourceName == null) {
+            resourceName = System.getProperty("user.dir") + "\\src\\test\\" + PropertyFileConfig.DEFAULT_CONFIG;
+        }
         try (InputStream input = new FileInputStream(resourceName)) {
             Properties prop = new Properties();
             prop.load(input);

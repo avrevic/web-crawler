@@ -20,11 +20,12 @@ public class UrlUtilTest {
 
     /**
      * Multiple URL equality combination checks
+     *
      * @param source source url
      * @param targetUrlString target url
      * @param assertCheck check if true or false equality
      * @param targetProtocolSpecified if url protocol is or isnt specified
-     * @throws MalformedURLException 
+     * @throws MalformedURLException
      */
     private void urlEqualityCombinationsAssert(String source, String targetUrlString, boolean assertCheck, boolean targetProtocolSpecified) throws MalformedURLException {
         if (targetProtocolSpecified) {

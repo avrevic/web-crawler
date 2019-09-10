@@ -6,6 +6,7 @@
 package com.avrevic.babylon.health.challenge;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Interface for various sitemap implementations
@@ -19,5 +20,5 @@ public interface ISiteMap {
      *
      * @param urlList List or urls in the final sitemap
      */
-    public void generateSitemap(HashMap<Integer, HashMap<String, Boolean>> urlList);
+    public void generateSitemap(String baseUrl, HashMap<Integer, Set<String>> urlList);
 }

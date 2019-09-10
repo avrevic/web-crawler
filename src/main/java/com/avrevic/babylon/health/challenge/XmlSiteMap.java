@@ -1,6 +1,7 @@
 package com.avrevic.babylon.health.challenge;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Generates machine readable xml sitemap
@@ -15,7 +16,7 @@ public class XmlSiteMap implements ISiteMap {
      * @param urlList list of urls in a final sitemap
      */
     @Override
-    public void generateSitemap(HashMap<Integer, HashMap<String, Boolean>> urlList) {
+    public void generateSitemap(String baseUrl, HashMap<Integer, Set<String>> urlList) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -2,7 +2,9 @@
 import com.avrevic.babylon.health.challenge.WebCrawler;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -48,13 +50,13 @@ public class WebCrawlerTest {
 
     @Test
     public void shouldReturnCorrectLinkHierarchy() throws Exception {
-        HashMap<Integer, HashMap<String, Boolean>> testUrls = new HashMap<>();
-        HashMap<String, Boolean> urlLinks = new HashMap<>();
-        urlLinks.put("http://localhost", true);
+        HashMap<Integer, Set<String>> testUrls = new HashMap<>();
+        Set<String> urlLinks = new HashSet<>();
+        urlLinks.add("http://localhost");
         testUrls.put(0, urlLinks);
-        urlLinks = new HashMap<>();
-        urlLinks.put("http://localhost/page2.html", true);
-        urlLinks.put("http://localhost/index.html", true);
+        urlLinks = new HashSet<>();
+        urlLinks.add("http://localhost/page2.html");
+        urlLinks.add("http://localhost/index.html");
         testUrls.put(1, urlLinks);
         WebCrawler crawler = initializeCrawler("http://localhost");
         crawler.crawl();

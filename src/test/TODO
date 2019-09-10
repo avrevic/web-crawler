@@ -19,3 +19,5 @@ performance
 compile for linux/windows
 readme file
 libs used in project
+Guice bind from property file (xml sitemap)
+subdomain hierarchy was not tested

@@ -13,6 +13,8 @@ public class BasicModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(IConfig.class).to(PropertyFileConfig.class);
+        bind(ISiteMap.class).to(HtmlSiteMap.class);
+        bind(ICrawler.class).to(WebCrawler.class);
     }
 
 }
