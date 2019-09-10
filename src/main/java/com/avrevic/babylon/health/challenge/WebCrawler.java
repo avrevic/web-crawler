@@ -56,22 +56,31 @@ public class WebCrawler implements ICrawler {
         return sourceUrl.getPath();
     }
 
-    public boolean checkHostUrlEquality(String source, String target) throws MalformedURLException {
+    public boolean isSubdomain(String source, String target) throws MalformedURLException {
+        target = target.substring(target.indexOf(".") + 1);
+        if (source.equals(target)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String getHostUrl(String source) throws MalformedURLException {
         URL sourceUrl = new URL(source);
-        URL targetUrl = new URL(target);
         String sourceUrlToCompare = sourceUrl.getHost();
-        String targetUrlToCompare = targetUrl.getHost();
         if (sourceUrlToCompare != null && sourceUrlToCompare.startsWith("www.")) {
             sourceUrlToCompare = sourceUrlToCompare.substring(4);
         }
-        if (targetUrlToCompare != null && targetUrlToCompare.startsWith("www.")) {
-            targetUrlToCompare = targetUrlToCompare.substring(4);
-        }
+        return sourceUrlToCompare;
+    }
+
+    public boolean checkHostUrlEquality(String source, String target) throws MalformedURLException {
+        String sourceUrlToCompare = getHostUrl(source);
+        String targetUrlToCompare = getHostUrl(target);
         if (sourceUrlToCompare.equals(targetUrlToCompare)) {
             return true;
         } else {
-            targetUrlToCompare = targetUrlToCompare.substring(targetUrlToCompare.indexOf(".") + 1);
-            if (sourceUrlToCompare.equals(targetUrlToCompare)) {
+            if (isSubdomain(sourceUrlToCompare, targetUrlToCompare)) {
                 return true;
             }
             return false;

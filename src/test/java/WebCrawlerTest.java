@@ -122,6 +122,13 @@ public class WebCrawlerTest {
     }
 
     @Test
+    public void shouldReturnCorrectHostUrl() throws MalformedURLException {
+        String sourceUrlString = "http://example.com/test";
+        WebCrawler crawler = initializeCrawler(sourceUrlString);
+        Assert.assertEquals("example.com", crawler.getHostUrl(sourceUrlString));
+    }
+
+    @Test
     public void pathsShouldBeEqual() throws MalformedURLException {
         String sourceUrlString = "http://example.com/test";
         String targetUrlString = "https://example.com/test";
@@ -129,4 +136,11 @@ public class WebCrawlerTest {
         Assert.assertEquals(crawler.fetchUrlPath(sourceUrlString), crawler.fetchUrlPath(targetUrlString));
     }
 
+    @Test
+    public void isSubdomainShouldReturnTrue() throws MalformedURLException {
+        String sourceUrlString = "http://example.com/test";
+        String targetUrlString = "https://com.example.com/test";
+        WebCrawler crawler = initializeCrawler(sourceUrlString);
+        Assert.assertEquals(crawler.isSubdomain(crawler.getHostUrl(sourceUrlString), crawler.getHostUrl(targetUrlString)), true);
+    }
 }
