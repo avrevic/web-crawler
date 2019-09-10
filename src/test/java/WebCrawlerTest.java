@@ -74,16 +74,52 @@ public class WebCrawlerTest {
         Assert.assertEquals(testUrls, crawler.getSiteUrls());
     }
 
+    private void urlEqualityCombinationsAssert(WebCrawler crawler, String source, String targetUrlString, boolean assertCheck, boolean targetProtocolSpecified) throws MalformedURLException {
+        if (targetProtocolSpecified) {
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, targetUrlString), assertCheck);
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, targetUrlString + "/"), assertCheck);
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, targetUrlString + ":/"), assertCheck);
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, targetUrlString + ":80/"), assertCheck);
+        } else {
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, "http://" + targetUrlString + ""), assertCheck);
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, "http://" + targetUrlString + "/"), assertCheck);
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, "http://" + targetUrlString + ":/"), assertCheck);
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, "http://" + targetUrlString + ":80/"), assertCheck);
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, "http://com." + targetUrlString + "/"), assertCheck);
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, "https://" + targetUrlString + ""), assertCheck);
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, "https://" + targetUrlString + "/"), assertCheck);
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, "https://" + targetUrlString + ":/"), assertCheck);
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, "https://" + targetUrlString + ":80/"), assertCheck);
+            Assert.assertEquals(crawler.checkHostUrlEquality(source, "https://com." + targetUrlString + "/"), assertCheck);
+        }
+    }
+
     @Test
     public void urlsShouldBeEqual() throws MalformedURLException {
-        String urlString = "http://example.com";
-        URL source = new URL(urlString);
-        WebCrawler crawler = initializeCrawler(urlString);
-        Assert.assertEquals(crawler.checkUrlEquality(source, new URL("http://example.com")), true);
-        Assert.assertEquals(crawler.checkUrlEquality(source, new URL("http://example.com/")), true);
-        Assert.assertEquals(crawler.checkUrlEquality(source, new URL("http://example.com:/")), true);
-        Assert.assertEquals(crawler.checkUrlEquality(source, new URL("http://example.com:80/")), true);
-        Assert.assertEquals(crawler.checkUrlEquality(source, new URL("http://com.example.com/")), true);
+        String sourceUrlString = "http://example.com";
+        String targetUrlString = "example.com";
+        WebCrawler crawler = initializeCrawler(sourceUrlString);
+        urlEqualityCombinationsAssert(crawler, sourceUrlString, targetUrlString, true, false);
+        targetUrlString = "https://example.com";
+        urlEqualityCombinationsAssert(crawler, sourceUrlString, targetUrlString, true, true);
+        targetUrlString = "example.com/test";
+        urlEqualityCombinationsAssert(crawler, sourceUrlString, targetUrlString, true, false);
+        targetUrlString = "https://example.com/test";
+        urlEqualityCombinationsAssert(crawler, sourceUrlString, targetUrlString, true, true);
+    }
+
+    @Test
+    public void urlsShouldNotBeEqual() throws MalformedURLException {
+        String sourceUrlString = "http://example.com";
+        String targetUrlString = "http://google.com";
+        WebCrawler crawler = initializeCrawler(sourceUrlString);
+        urlEqualityCombinationsAssert(crawler, sourceUrlString, targetUrlString, false, true);
+        targetUrlString = "google.com";
+        urlEqualityCombinationsAssert(crawler, sourceUrlString, targetUrlString, false, false);
+        targetUrlString = "google.com/test";
+        urlEqualityCombinationsAssert(crawler, sourceUrlString, targetUrlString, false, false);
+        targetUrlString = "http://google.com/test";
+        urlEqualityCombinationsAssert(crawler, sourceUrlString, targetUrlString, false, true);
     }
 
 }
