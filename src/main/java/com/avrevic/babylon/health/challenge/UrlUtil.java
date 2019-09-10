@@ -4,16 +4,30 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
+ * Helper utility for URL validation, parsing ...
  *
  * @author avrevic
  */
 public class UrlUtil {
 
+    /**
+     * 
+     * @param source
+     * @return
+     * @throws MalformedURLException 
+     */
     public String fetchUrlPath(String source) throws MalformedURLException {
         URL sourceUrl = new URL(source);
         return sourceUrl.getPath();
     }
 
+    /**
+     * 
+     * @param source
+     * @param target
+     * @return
+     * @throws MalformedURLException 
+     */
     public boolean isSubdomain(String source, String target) throws MalformedURLException {
         target = target.substring(target.indexOf(".") + 1);
         if (source.equals(target)) {
@@ -23,6 +37,12 @@ public class UrlUtil {
         }
     }
 
+    /**
+     * 
+     * @param source
+     * @return
+     * @throws MalformedURLException 
+     */
     public String getHostUrl(String source) throws MalformedURLException {
         URL sourceUrl = new URL(source);
         String sourceUrlToCompare = sourceUrl.getHost();
@@ -32,6 +52,13 @@ public class UrlUtil {
         return sourceUrlToCompare;
     }
 
+    /**
+     * 
+     * @param source
+     * @param target
+     * @return
+     * @throws MalformedURLException 
+     */
     public boolean checkHostUrlEquality(String source, String target) throws MalformedURLException {
         String sourceUrlToCompare = getHostUrl(source);
         String targetUrlToCompare = getHostUrl(target);

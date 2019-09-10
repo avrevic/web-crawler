@@ -8,10 +8,6 @@ import java.net.MalformedURLException;
 import junit.framework.Assert;
 import org.junit.Test;
 
-/**
- *
- * @author avrevic
- */
 public class UrlUtilTest {
 
     @Inject
@@ -22,6 +18,14 @@ public class UrlUtilTest {
         this.urlUtil = injector.getInstance(UrlUtil.class);
     }
 
+    /**
+     * 
+     * @param source
+     * @param targetUrlString
+     * @param assertCheck
+     * @param targetProtocolSpecified
+     * @throws MalformedURLException 
+     */
     private void urlEqualityCombinationsAssert(String source, String targetUrlString, boolean assertCheck, boolean targetProtocolSpecified) throws MalformedURLException {
         if (targetProtocolSpecified) {
             Assert.assertEquals(urlUtil.checkHostUrlEquality(source, targetUrlString), assertCheck);

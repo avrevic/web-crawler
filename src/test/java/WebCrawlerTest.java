@@ -1,16 +1,11 @@
 
 import com.avrevic.babylon.health.challenge.WebCrawler;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import junit.framework.Assert;
 import org.junit.Test;
 
-/**
- *
- * @author avrevic
- */
 public class WebCrawlerTest {
 
     private WebCrawler initializeCrawler(String path) {

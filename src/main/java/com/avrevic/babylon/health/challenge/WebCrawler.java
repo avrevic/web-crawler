@@ -27,18 +27,34 @@ public class WebCrawler implements ICrawler {
     @Inject
     private UrlUtil urlUtil;
 
+    /**
+     *
+     * @return
+     */
     public String getUrl() {
         return this.url;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<String> getDisabledUrls() {
         return this.disabledUrls;
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap<Integer, HashMap<String, Boolean>> getSiteUrls() {
         return this.siteUrls;
     }
 
+    /**
+     *
+     * @param url
+     */
     public void initializeParams(String url) {
         this.url = url;
         this.disabledUrls = new ArrayList<>();
@@ -47,6 +63,10 @@ public class WebCrawler implements ICrawler {
         this.urlUtil = injector.getInstance(UrlUtil.class);
     }
 
+    /**
+     *
+     * @return @throws Exception
+     */
     @Override
     public HashMap<Integer, HashMap<String, Boolean>> crawl() throws Exception {
         this.populateDisabledSites();
@@ -54,6 +74,13 @@ public class WebCrawler implements ICrawler {
         return this.getSiteUrls();
     }
 
+    /**
+     *
+     * @param url
+     * @param level
+     * @throws MalformedURLException
+     * @throws IOException
+     */
     public void fetchAllLinks(String url, Integer level) throws MalformedURLException, IOException {
         Document doc;
         if (!urlUtil.checkHostUrlEquality(this.url, url)) {
@@ -91,11 +118,19 @@ public class WebCrawler implements ICrawler {
         }
     }
 
+    /**
+     *
+     * @return @throws Exception
+     */
     public String fetchRobots() throws Exception {
         Document doc = Jsoup.parse(Jsoup.connect(this.url + "/robots.txt").get().toString());
         return doc.select("body").html();
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     public void populateDisabledSites() throws Exception {
         String robotsFile[] = this.fetchRobots().split("\\r?\\n");
         for (String line : robotsFile) {

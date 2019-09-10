@@ -7,10 +7,6 @@ import com.google.inject.Injector;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- *
- * @author avrevic
- */
 public class BasicModuleTest {
 
     @Inject
