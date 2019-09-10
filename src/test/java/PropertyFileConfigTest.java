@@ -16,7 +16,7 @@ public class PropertyFileConfigTest {
     public void propertyFileShouldBeLoadedSuccessfully() throws Exception {
         IConfig config = new PropertyFileConfig();
         Properties properties = config.getConfig(System.getProperty("user.dir") + "\\src\\test\\" + PropertyFileConfig.DEFAULT_CONFIG);
-        Assert.assertEquals("https://www.babylonhealth.com", properties.get("website"));
+        Assert.assertEquals("http://localhost", properties.get("website"));
     }
 
     @Test(expected = IOException.class)
