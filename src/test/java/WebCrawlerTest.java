@@ -5,6 +5,8 @@
  */
 
 import com.avrevic.babylon.health.challenge.WebCrawler;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,13 +53,13 @@ public class WebCrawlerTest {
         expectedValues.add("/vendor/");
         Assert.assertEquals(expectedValues, crawler.getDisabledUrls());
     }
-    
+
     @Test
     public void propertiesShouldBeInitializedSuccessfully() {
         WebCrawler crawler = initializeCrawler("http://localhost");
         Assert.assertNotNull(crawler.getUrl());
     }
-    
+
     @Test
     public void shouldReturnCorrectLinkHierarchy() {
         HashMap<Integer, Set<String>> testUrls = new HashMap<>();
@@ -70,6 +72,18 @@ public class WebCrawlerTest {
         WebCrawler crawler = initializeCrawler("http://localhost");
         crawler.crawl();
         Assert.assertEquals(testUrls, crawler.getSiteUrls());
+    }
+
+    @Test
+    public void urlsShouldBeEqual() throws MalformedURLException {
+        String urlString = "http://example.com";
+        URL source = new URL(urlString);
+        WebCrawler crawler = initializeCrawler(urlString);
+        Assert.assertEquals(crawler.checkUrlEquality(source, new URL("http://example.com")), true);
+        Assert.assertEquals(crawler.checkUrlEquality(source, new URL("http://example.com/")), true);
+        Assert.assertEquals(crawler.checkUrlEquality(source, new URL("http://example.com:/")), true);
+        Assert.assertEquals(crawler.checkUrlEquality(source, new URL("http://example.com:80/")), true);
+        Assert.assertEquals(crawler.checkUrlEquality(source, new URL("http://com.example.com/")), true);
     }
 
 }
