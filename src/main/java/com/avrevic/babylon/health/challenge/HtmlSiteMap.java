@@ -31,12 +31,12 @@ public class HtmlSiteMap implements ISiteMap {
         }
 
         for (Iterator<String> it = urlList.get(level).iterator(); it.hasNext();) {
-            String f = it.next();
-            if (f.startsWith(url)) {
+            String innerUrl = it.next();
+            if (innerUrl.startsWith(url)) {
                 sb.append("<li>\n");
-                sb.append(f + "\n");
+                sb.append(innerUrl + "\n");
                 sb.append("<ul>\n");
-                appendUrlHierarchy(urlList, level + 1, f, maxPath);
+                appendUrlHierarchy(urlList, level + 1, innerUrl, maxPath);
                 sb.append("</ul>\n");
                 sb.append("</li>\n");
             }

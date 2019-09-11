@@ -25,22 +25,20 @@ public class BabylonHealthCrawler {
     @Inject
     private ISiteMap siteMap;
 
-    @Inject
-    private IConfig config;
-
-    public void run() throws Exception {
+    public void run(String url) throws Exception {
         Injector injector = Guice.createInjector(new BasicModule());
         this.crawler = injector.getInstance(ICrawler.class);
-        this.config = injector.getInstance(IConfig.class);
         this.siteMap = injector.getInstance(ISiteMap.class);
-        String url = this.config.getConfig(null).getProperty("website");
         this.crawler.initializeParams(url);
         siteMap.generateSitemap(url, this.crawler.crawl());
     }
 
     public static void main(String args[]) {
+        if (args[1] == null) {
+            System.out.println("Input url must be set as a first argument of the program");
+        }
         try {
-            new BabylonHealthCrawler().run();
+            new BabylonHealthCrawler().run(args[1]);
         } catch (Exception ex) {
             System.out.println("Exception: " + ex.getMessage());
         }

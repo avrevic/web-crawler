@@ -1,6 +1,6 @@
 
 import com.avrevic.babylon.health.challenge.BasicModule;
-import com.avrevic.babylon.health.challenge.IConfig;
+import com.avrevic.babylon.health.challenge.HtmlSiteMap;
 import com.avrevic.babylon.health.challenge.ICrawler;
 import com.avrevic.babylon.health.challenge.ISiteMap;
 import com.google.inject.Guice;
@@ -17,18 +17,16 @@ public class HtmlSiteMapTest {
     @Inject
     private ICrawler crawler;
 
-    @Inject
-    private ISiteMap siteMap;
-
     @Test
     public void shouldGenerateCorrectHTMLSiteMap() throws Exception {
         Injector injector = Guice.createInjector(new BasicModule());
         this.crawler = injector.getInstance(ICrawler.class);
-        this.siteMap = injector.getInstance(ISiteMap.class);
+        HtmlSiteMap siteMap = new HtmlSiteMap();
         this.crawler.initializeParams("http://localhost");
         siteMap.generateSitemap("http://localhost", this.crawler.crawl());
-        String newFile = new String(Files.readAllBytes(Paths.get(FileSystems.getDefault().getPath(".").toString() + "/output/sitemap.html")));
-        String testFile = new String(Files.readAllBytes(Paths.get(FileSystems.getDefault().getPath(".").toString() + "/src/test/sitemap-test.html")));
+        String path = FileSystems.getDefault().getPath(".").toString();
+        String newFile = new String(Files.readAllBytes(Paths.get(path + "/output/sitemap.html")));
+        String testFile = new String(Files.readAllBytes(Paths.get(path + "/src/test/sitemap-test.html")));
         Assert.assertEquals(testFile, newFile);
     }
 }

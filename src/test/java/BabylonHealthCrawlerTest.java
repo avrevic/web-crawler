@@ -11,8 +11,17 @@ public class BabylonHealthCrawlerTest {
     }
 
     @Test
+    // Not really much of a test, but want to get 100% code coverage
+    public void shouldSilentlyThrowException() {
+        String args[] = new String[2];
+        BabylonHealthCrawler.main(args);
+    }
+
+    @Test
     public void shouldExecuteProgramSuccessfully() {
-        BabylonHealthCrawler.main(null);
+        String args[] = new String[2];
+        args[1] = "http://localhost";
+        BabylonHealthCrawler.main(args);
     }
 
     @Test
