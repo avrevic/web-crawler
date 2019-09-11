@@ -1,1 +1,0 @@
-# babylon-health-challenge
