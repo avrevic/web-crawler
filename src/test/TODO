@@ -1,8 +1,5 @@
 TODO:
 
-java -jar xyz.jar 
-
-main
 sitemap html + xml
 Javadoc
 comments
@@ -18,7 +15,7 @@ include threading info, challenges, aopic (http://tutorials.jenkov.com/java-howt
 https://stackoverflow.com/questions/5834808/designing-a-web-crawler
 explain the solution
 performance
-compile for linux/windows
+compile for linux/windows java -jar babylon-health-crawler.jar <URL>
 readme file
 libs used in project
 Guice bind from property file (xml sitemap)
