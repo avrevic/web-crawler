@@ -1,6 +1,6 @@
 The program requires JRE8 to run. It is written in Java.
 
-Run the program by typing: java -jar babylon-health-crawler.jar <URL>
+Run the program by typing: java -jar .\app\babylon-health-crawler.jar <URL>
 
 URL needs to be passed in full format including the protocol. Example https://babylonhealth.com
 
