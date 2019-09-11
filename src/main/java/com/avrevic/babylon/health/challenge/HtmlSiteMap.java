@@ -7,8 +7,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Generates human readable sitemap
@@ -19,6 +17,14 @@ public class HtmlSiteMap implements ISiteMap {
 
     StringBuilder sb;
 
+    /**
+     * Recursively outputs url hierarchy
+     *
+     * @param urlList list of urls to scan
+     * @param level depth of hierachy
+     * @param url base url
+     * @param maxPath max depth to scan
+     */
     public void appendUrlHierarchy(HashMap<Integer, Set<String>> urlList, Integer level, String url, Integer maxPath) {
         if (level > maxPath) {
             return;
@@ -40,6 +46,7 @@ public class HtmlSiteMap implements ISiteMap {
     /**
      * Parse list of urls and generate sitemap
      *
+     * @param baseUrl
      * @param urlList list of urls in a final sitemap
      */
     @Override
@@ -49,6 +56,7 @@ public class HtmlSiteMap implements ISiteMap {
         sb.append("<html>\n");
         sb.append("<body>\n");
         int maxPath = 0;
+        // Get the max key num so that we know how deep to scan in recursion
         Set<Integer> keys = urlList.keySet();
         for (Integer key : keys) {
             if (key >= maxPath) {
@@ -60,6 +68,7 @@ public class HtmlSiteMap implements ISiteMap {
         sb.append("<li>\n");
         sb.append(baseUrl + "\n");
         sb.append("<ul>\n");
+        // Call a recursive function that hierarchically outputs the URLs to file
         appendUrlHierarchy(urlList, 1, baseUrl, maxPath);
         sb.append("</ul>\n");
         sb.append("</li>\n");
@@ -67,11 +76,12 @@ public class HtmlSiteMap implements ISiteMap {
         sb.append("</body>\n");
         sb.append("</html>");
         try {
-            Files.write(Paths.get(FileSystems.getDefault().getPath(".").toString() + "/output/sitemap.html"), sb.toString().getBytes());
-            System.out.println("Success");
+            String path = FileSystems.getDefault().getPath(".").toString() + "/output/sitemap.html";
+            Files.write(Paths.get(path),
+                    sb.toString().getBytes());
+            System.out.println("Successfully generated html sitemap to " + path);
         } catch (IOException ex) {
-            Logger.getLogger(HtmlSiteMap.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Fail");
+            System.out.println("Cannot generate html sitemap: " + ex.getMessage());
         }
     }
 
