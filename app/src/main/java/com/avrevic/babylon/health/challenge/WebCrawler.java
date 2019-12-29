@@ -83,7 +83,10 @@ public class WebCrawler implements ICrawler {
      */
     @Override
     public HashMap<Integer, Set<String>> crawl() throws Exception {
-        this.populateDisabledSites();
+        try {
+            this.populateDisabledSites();
+        } catch (Exception ex) {
+        }
         fetchAllLinks(this.url);
         return this.getSiteUrls();
     }
