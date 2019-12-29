@@ -22,12 +22,13 @@ import org.jsoup.select.Elements;
 /**
  * Crawler implementation that gets the sitemap in a hierarchical structure
  */
-public class WebCrawler implements ICrawler {
+public class WebCrawler implements ICrawler, Runnable {
 
     private String url;
-    private List<String> disabledUrls;
+    private static volatile List<String> disabledUrls;
     private static volatile HashMap<Integer, Set<String>> siteUrls;
     private static volatile Integer threadCount = 0;
+    private String threadHref = "";
 
     @Inject
     private UrlUtil urlUtil;
@@ -47,7 +48,7 @@ public class WebCrawler implements ICrawler {
      * @return
      */
     public List<String> getDisabledUrls() {
-        return this.disabledUrls;
+        return WebCrawler.disabledUrls;
     }
 
     /**
@@ -67,9 +68,9 @@ public class WebCrawler implements ICrawler {
     @Override
     public void initializeParams(String url, Boolean initializeSiteList) {
         this.url = url;
-        this.disabledUrls = new ArrayList<>();
         if (initializeSiteList) {
             WebCrawler.siteUrls = new HashMap<>();
+            WebCrawler.disabledUrls = new ArrayList<>();
         }
         Injector injector = Guice.createInjector(new BasicModule());
         this.urlUtil = injector.getInstance(UrlUtil.class);
@@ -119,7 +120,7 @@ public class WebCrawler implements ICrawler {
             //External link
             return;
         }
-        if (disabledUrls.contains(StringUtils.stripEnd(StringUtils.stripStart(path, "/"), "/"))) {
+        if (WebCrawler.disabledUrls.contains(StringUtils.stripEnd(StringUtils.stripStart(path, "/"), "/"))) {
             //Link crawling is disabled by robots
             return;
         }
@@ -138,16 +139,39 @@ public class WebCrawler implements ICrawler {
         }
         Elements links = doc.select("a[href]");
         System.out.println("href fetch complete for url: " + url);
+        List<Thread> threadList = new ArrayList<>();
         for (Element link : links) {
             String href = link.attr("href");
+            System.out.println("Got another href: " + href);
             try {
                 // See if it is a valid URL - if yes, then it is a fully
                 // qualified URL and not only a path
                 new URL(href);
-                fetchAllLinks(href);
             } catch (MalformedURLException ex) {
                 // Not a fully qualified url, only a path
-                fetchAllLinks(this.url + "/" + href);
+                href = this.url + "/" + href;
+            }
+            System.out.println("Thread count is: " + WebCrawler.threadCount);
+            if (WebCrawler.threadCount > 220) {
+                fetchAllLinks(href);
+            } else {
+                System.out.println("Thread count is < 200, creating a new thread");
+                WebCrawler.threadCount++;
+                WebCrawler newThread = new WebCrawler();
+                newThread.initializeParams(this.url, false);
+                newThread.threadHref = href;
+                Thread thread = new Thread(newThread, "New thread");
+                threadList.add(thread);
+                newThread.run();
+            }
+        }
+        for (Thread crawler : threadList) {
+            try {
+                crawler.join();
+                System.out.println("Joined thread");
+                WebCrawler.threadCount--;
+            } catch (InterruptedException ex) {
+                Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -175,9 +199,19 @@ public class WebCrawler implements ICrawler {
         for (String line : robotsFile) {
             // Find where the slash ('/') starts - from that point we want to get the path of URL
             Integer slashIndex = line.indexOf("/");
-            if (slashIndex != -1 && !this.disabledUrls.contains(line.substring(slashIndex))) {
-                this.disabledUrls.add(StringUtils.stripEnd(StringUtils.stripStart(line.substring(slashIndex), "/"), "/"));
+            if (slashIndex != -1 && !WebCrawler.disabledUrls.contains(line.substring(slashIndex))) {
+                WebCrawler.disabledUrls.add(StringUtils.stripEnd(StringUtils.stripStart(line.substring(slashIndex), "/"), "/"));
             }
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            System.out.println("Running thread for: " + this.threadHref);
+            fetchAllLinks(this.threadHref);
+        } catch (IOException ex) {
+            Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

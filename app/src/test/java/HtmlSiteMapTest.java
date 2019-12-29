@@ -2,7 +2,6 @@
 import com.avrevic.babylon.health.challenge.BasicModule;
 import com.avrevic.babylon.health.challenge.HtmlSiteMap;
 import com.avrevic.babylon.health.challenge.ICrawler;
-import com.avrevic.babylon.health.challenge.ISiteMap;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -22,7 +21,7 @@ public class HtmlSiteMapTest {
         Injector injector = Guice.createInjector(new BasicModule());
         this.crawler = injector.getInstance(ICrawler.class);
         HtmlSiteMap siteMap = new HtmlSiteMap();
-        this.crawler.initializeParams("http://localhost");
+        this.crawler.initializeParams("http://localhost", true);
         siteMap.generateSitemap("http://localhost", this.crawler.crawl());
         String path = FileSystems.getDefault().getPath(".").toString();
         String newFile = new String(Files.readAllBytes(Paths.get(path + "/output/sitemap.html")));

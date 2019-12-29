@@ -23,7 +23,7 @@ public class XmlSiteMapTest {
         Injector injector = Guice.createInjector(new BasicModule());
         this.crawler = injector.getInstance(ICrawler.class);
         XmlSiteMap siteMap = new XmlSiteMap();
-        this.crawler.initializeParams("http://localhost");
+        this.crawler.initializeParams("http://localhost", true);
         siteMap.generateSitemap("http://localhost", this.crawler.crawl());
         String path = FileSystems.getDefault().getPath(".").toString();
         String newFile = new String(Files.readAllBytes(Paths.get(path + "/output/sitemap.xml")));
