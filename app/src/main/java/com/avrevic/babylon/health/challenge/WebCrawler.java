@@ -91,15 +91,23 @@ public class WebCrawler implements ICrawler {
      * @throws IOException
      */
     public void fetchAllLinks(String url) throws MalformedURLException, IOException {
-        Document doc;
-        if (!urlUtil.isSourceHostURLEqualTarget(this.url, url)) {
-            //External link
-            return;
-        }
+        url = StringUtils.stripEnd(url, "/");
         String path = urlUtil.getUrlPath(url);
         Integer hierachyLevel = StringUtils.countMatches(path, "/");
-        if (this.siteUrls.get(hierachyLevel) != null && this.siteUrls.get(hierachyLevel).contains(url)) {
-            //Link already in the hierarchy table
+        Document doc;
+        
+        if (this.siteUrls.get(hierachyLevel) != null) {
+            for (String storedUrl : this.siteUrls.get(hierachyLevel)) {
+                String pathStored = urlUtil.getUrlPath(storedUrl);
+                //Link already in the hierarchy table
+                if (pathStored.contains(path)) {
+                    return;
+                }
+            }
+        }
+        
+        if (!urlUtil.isSourceHostURLEqualTarget(this.url, url)) {
+            //External link
             return;
         }
         if (disabledUrls.contains(StringUtils.stripEnd(StringUtils.stripStart(path, "/"), "/"))) {
