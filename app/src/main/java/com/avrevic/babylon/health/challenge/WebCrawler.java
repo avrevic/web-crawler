@@ -178,7 +178,7 @@ public class WebCrawler implements ICrawler, Runnable {
                 newThread.threadHref = href;
                 Thread thread = new Thread(newThread, "New thread");
                 threadList.add(thread);
-                newThread.run();
+                thread.start();
             }
         }
         for (Thread crawler : threadList) {
