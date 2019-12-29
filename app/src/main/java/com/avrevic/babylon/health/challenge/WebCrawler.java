@@ -111,6 +111,7 @@ public class WebCrawler implements ICrawler, Runnable {
                 String pathStored = urlUtil.getUrlPath(storedUrl);
                 //Link already in the hierarchy table
                 if (pathStored.contains(path)) {
+                    System.out.println("URL already in table");
                     return;
                 }
             }
@@ -142,20 +143,18 @@ public class WebCrawler implements ICrawler, Runnable {
         List<Thread> threadList = new ArrayList<>();
         for (Element link : links) {
             String href = link.attr("href");
-            System.out.println("Got another href: " + href);
             try {
                 // See if it is a valid URL - if yes, then it is a fully
                 // qualified URL and not only a path
                 new URL(href);
             } catch (MalformedURLException ex) {
                 // Not a fully qualified url, only a path
-                href = this.url + "/" + href;
+                href = StringUtils.stripEnd(StringUtils.stripEnd(this.url, "/") + "/" + StringUtils.stripStart(href, "/"), "/");
             }
             System.out.println("Thread count is: " + WebCrawler.threadCount);
-            if (WebCrawler.threadCount > 220) {
+            if (WebCrawler.threadCount > 150) {
                 fetchAllLinks(href);
             } else {
-                System.out.println("Thread count is < 200, creating a new thread");
                 WebCrawler.threadCount++;
                 WebCrawler newThread = new WebCrawler();
                 newThread.initializeParams(this.url, false);
@@ -168,7 +167,6 @@ public class WebCrawler implements ICrawler, Runnable {
         for (Thread crawler : threadList) {
             try {
                 crawler.join();
-                System.out.println("Joined thread");
                 WebCrawler.threadCount--;
             } catch (InterruptedException ex) {
                 Logger.getLogger(WebCrawler.class.getName()).log(Level.SEVERE, null, ex);
