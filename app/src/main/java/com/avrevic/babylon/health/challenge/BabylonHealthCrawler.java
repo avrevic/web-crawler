@@ -1,4 +1,6 @@
 /*
+ * TODO - Fetch external URL's, but don't crawl them
+ *
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -31,7 +33,7 @@ public class BabylonHealthCrawler {
         Injector injector = Guice.createInjector(new BasicModule());
         this.crawler = injector.getInstance(ICrawler.class);
         this.siteMap = injector.getInstance(ISiteMap.class);
-        this.crawler.initializeParams(url);
+        this.crawler.initializeParams(url, true);
         HashMap<Integer, Set<String>> urlHierarchy = this.crawler.crawl();
         siteMap.generateSitemap(url, urlHierarchy);
         this.siteMap = injector.getInstance(XmlSiteMap.class);

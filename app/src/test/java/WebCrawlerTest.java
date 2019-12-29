@@ -1,5 +1,6 @@
 
 import com.avrevic.babylon.health.challenge.WebCrawler;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,7 +13,7 @@ public class WebCrawlerTest {
 
     private WebCrawler initializeCrawler(String path) {
         WebCrawler crawler = new WebCrawler();
-        crawler.initializeParams(path);
+        crawler.initializeParams(path, true);
         return crawler;
     }
 
@@ -21,7 +22,7 @@ public class WebCrawlerTest {
         WebCrawler crawler = initializeCrawler("http://localhost");
         String robotsFile = crawler.fetchRobots();
         Assert.assertEquals("User-agent: * Disallow: /vendor/", robotsFile);
-        crawler.initializeParams("https://www.google.com");
+        crawler.initializeParams("https://www.google.com", true);
         robotsFile = crawler.fetchRobots();
         Assert.assertNotNull(robotsFile);
     }
@@ -63,8 +64,8 @@ public class WebCrawlerTest {
         Assert.assertEquals(testUrls, crawler.getSiteUrls());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldReturnInvalidArgumentException() throws Exception {
+    @Test(expected = MalformedURLException.class)
+    public void shouldReturnMalformedUrlException() throws Exception {
         WebCrawler crawler = initializeCrawler("invalid_url");
         crawler.crawl();
     }

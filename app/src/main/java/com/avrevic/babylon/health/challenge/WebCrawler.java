@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,7 +26,9 @@ public class WebCrawler implements ICrawler {
 
     private String url;
     private List<String> disabledUrls;
-    private HashMap<Integer, Set<String>> siteUrls;
+    private static volatile HashMap<Integer, Set<String>> siteUrls;
+    private static volatile Integer threadCount = 0;
+
     @Inject
     private UrlUtil urlUtil;
 
@@ -52,7 +56,7 @@ public class WebCrawler implements ICrawler {
      * @return
      */
     public HashMap<Integer, Set<String>> getSiteUrls() {
-        return this.siteUrls;
+        return WebCrawler.siteUrls;
     }
 
     /**
@@ -61,10 +65,12 @@ public class WebCrawler implements ICrawler {
      * @param url url which we want to crawl
      */
     @Override
-    public void initializeParams(String url) {
+    public void initializeParams(String url, Boolean initializeSiteList) {
         this.url = url;
         this.disabledUrls = new ArrayList<>();
-        this.siteUrls = new HashMap<>();
+        if (initializeSiteList) {
+            WebCrawler.siteUrls = new HashMap<>();
+        }
         Injector injector = Guice.createInjector(new BasicModule());
         this.urlUtil = injector.getInstance(UrlUtil.class);
     }
@@ -95,9 +101,9 @@ public class WebCrawler implements ICrawler {
         String path = urlUtil.getUrlPath(url);
         Integer hierachyLevel = StringUtils.countMatches(path, "/");
         Document doc;
-        
-        if (this.siteUrls.get(hierachyLevel) != null) {
-            for (String storedUrl : this.siteUrls.get(hierachyLevel)) {
+
+        if (WebCrawler.siteUrls.get(hierachyLevel) != null) {
+            for (String storedUrl : WebCrawler.siteUrls.get(hierachyLevel)) {
                 String pathStored = urlUtil.getUrlPath(storedUrl);
                 //Link already in the hierarchy table
                 if (pathStored.contains(path)) {
@@ -105,7 +111,7 @@ public class WebCrawler implements ICrawler {
                 }
             }
         }
-        
+
         if (!urlUtil.isSourceHostURLEqualTarget(this.url, url)) {
             //External link
             return;
@@ -115,12 +121,12 @@ public class WebCrawler implements ICrawler {
             return;
         }
         // Initialize tha hashmap
-        if (this.siteUrls.get(hierachyLevel) == null) {
+        if (WebCrawler.siteUrls.get(hierachyLevel) == null) {
             Set<String> newUrlBranch = new HashSet<>();
             newUrlBranch.add(url);
-            this.siteUrls.put(hierachyLevel, newUrlBranch);
+            WebCrawler.siteUrls.put(hierachyLevel, newUrlBranch);
         } else {
-            this.siteUrls.get(hierachyLevel).add(url);
+            WebCrawler.siteUrls.get(hierachyLevel).add(url);
         }
         try {
             doc = Jsoup.parse(Jsoup.connect(url).get().toString());
