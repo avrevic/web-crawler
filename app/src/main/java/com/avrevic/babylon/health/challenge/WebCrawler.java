@@ -92,6 +92,29 @@ public class WebCrawler implements ICrawler, Runnable {
         return this.getSiteUrls();
     }
 
+    public Boolean urlNeedsFetching(String path, Integer hierachyLevel, String url) throws MalformedURLException {
+        if (WebCrawler.siteUrls.get(hierachyLevel) != null) {
+            for (String storedUrl : WebCrawler.siteUrls.get(hierachyLevel)) {
+                String pathStored = urlUtil.getUrlPath(storedUrl);
+                //Link already in the hierarchy table
+                if (pathStored.contains(path)) {
+                    return false;
+                }
+            }
+        }
+
+        if (!urlUtil.isSourceHostURLEqualTarget(this.url, url)) {
+            //External link
+            return false;
+        }
+        if (WebCrawler.disabledUrls.contains(StringUtils.stripEnd(StringUtils.stripStart(path, "/"), "/"))) {
+            //Link crawling is disabled by robots
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Get all links from the website, but first add the source url to the list
      * if it is not in the list. Recursive function
@@ -101,30 +124,16 @@ public class WebCrawler implements ICrawler, Runnable {
      * @throws IOException
      */
     public void fetchAllLinks(String url) throws MalformedURLException, IOException {
+        Document doc;
+
         url = StringUtils.stripEnd(url, "/");
         String path = urlUtil.getUrlPath(url);
         Integer hierachyLevel = StringUtils.countMatches(path, "/");
-        Document doc;
 
-        if (WebCrawler.siteUrls.get(hierachyLevel) != null) {
-            for (String storedUrl : WebCrawler.siteUrls.get(hierachyLevel)) {
-                String pathStored = urlUtil.getUrlPath(storedUrl);
-                //Link already in the hierarchy table
-                if (pathStored.contains(path)) {
-                    System.out.println("URL already in table");
-                    return;
-                }
-            }
-        }
-
-        if (!urlUtil.isSourceHostURLEqualTarget(this.url, url)) {
-            //External link
+        if (!urlNeedsFetching(path, hierachyLevel, url)) {
             return;
         }
-        if (WebCrawler.disabledUrls.contains(StringUtils.stripEnd(StringUtils.stripStart(path, "/"), "/"))) {
-            //Link crawling is disabled by robots
-            return;
-        }
+        
         // Initialize tha hashmap
         if (WebCrawler.siteUrls.get(hierachyLevel) == null) {
             Set<String> newUrlBranch = new HashSet<>();
@@ -149,9 +158,17 @@ public class WebCrawler implements ICrawler, Runnable {
                 new URL(href);
             } catch (MalformedURLException ex) {
                 // Not a fully qualified url, only a path
+                // TODO refactor this, looks shitty
                 href = StringUtils.stripEnd(StringUtils.stripEnd(this.url, "/") + "/" + StringUtils.stripStart(href, "/"), "/");
             }
-            System.out.println("Thread count is: " + WebCrawler.threadCount);
+
+            path = urlUtil.getUrlPath(href);
+            hierachyLevel = StringUtils.countMatches(path, "/");
+            
+            if (!urlNeedsFetching(path, hierachyLevel, href)) {
+                continue;
+            }
+            
             if (WebCrawler.threadCount > 150) {
                 fetchAllLinks(href);
             } else {
